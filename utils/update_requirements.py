@@ -1,5 +1,5 @@
 import sys
 
-input = sys.argv[1]
+input_arg = sys.argv[1]
 
-print(input)
+print(input_arg)
