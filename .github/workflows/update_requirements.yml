@@ -12,6 +12,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Update Requirements Changes
+      - name: Get list of changed files
+        id: files
         run: |
-          echo "Requirements have been updated."
+          echo "::set-output name=list::$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})"
+          
+      - name: Use Changed Files
+        run: |
+          echo "Changed Files: ${{ steps.files.outputs.list }}"
