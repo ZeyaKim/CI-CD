@@ -9,6 +9,9 @@ jobs:
   echo_message:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
       - name: Get changed files from API
         id: changed-files
         uses: actions/github-script@v5
@@ -23,8 +26,18 @@ jobs:
               base: before,
               head: after
             });
-    
+
             const files = response.data.files.map(file => file.filename);
-            console.log("Changed Files:", files.join("\n")); // 콘솔에 변경된 파일 목록을 출력합니다.
+            console.log(files.join(" ")); // 콘솔에 변경된 파일 목록을 출력합니다.
             core.setOutput("list", files.join("\n")); // 출력 변수에 변경된 파일 목록을 설정합니다.
-    
+
+      - name: Filter and run script on changed files
+        run: |
+          IFS=$'\n' read -r -d '' -a files <<< "${{ steps.changed-files.outputs.list }}"
+          for file in "${files[@]}"; do
+            if [[ $file == docs/requirements/* ]]; then
+              echo "Updating requirements for $file"
+              python3 update_requirements.py "$file"
+            fi
+          done
+        shell: bash
