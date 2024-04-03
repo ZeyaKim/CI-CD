@@ -9,14 +9,21 @@ jobs:
   echo_message:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Get list of changed files
-        id: files
-        run: |
-          echo "::set-output name=list::$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})"
-          
-      - name: Use Changed Files
-        run: |
-          echo "Changed Files: ${{ steps.files.outputs.list }}"
+      - name: Get changed files from API
+        id: changed-files
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const payload = context.payload;
+            const before = payload.before;
+            const after = payload.after;
+            const response = await github.rest.repos.compareCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              base: before,
+              head: after
+            });
+    
+            const files = response.data.files.map(file => file.filename);
+            core.setOutput("list", files.join("\n"));
+    
