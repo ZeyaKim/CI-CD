@@ -1,0 +1,17 @@
+name: Update Requirements Changes
+
+on:
+  push:
+    paths:
+      - 'docs/requirements/**'
+
+jobs:
+  echo_message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update Requirements Changes
+        run: |
+          echo "Requirements have been updated."
