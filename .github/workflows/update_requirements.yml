@@ -37,7 +37,7 @@ jobs:
           for file in "${files[@]}"; do
             if [[ $file == docs/requirements/* ]]; then
               echo "Updating requirements for $file"
-              python3 update_requirements.py "$file"
+              python3 utils/update_requirements.py "$file"
             fi
           done
         shell: bash
