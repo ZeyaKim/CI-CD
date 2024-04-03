@@ -33,7 +33,7 @@ jobs:
 
       - name: Filter and run script on changed files
         run: |
-          IFS=$'\n' read -r -a files <<< "${{ steps.changed-files.outputs.list }}"
+          IFS=$'\n' read -r -d '' -a files <<< "${{ steps.changed-files.outputs.list }}"
           for file in "${files[@]}"; do
             if [[ $file == docs/requirements/* ]]; then
               echo "Updating requirements for $file"
